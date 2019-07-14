@@ -23,7 +23,8 @@ struct compatitors
     bool ifElementImmune;                               //For Fu hua
     bool ifDamageReversed;                              //For Liliya
     int burningRecord;   
-    bool ifStopMoving;                                  //By Sakura
+    bool ifStopMoving;   
+    bool ifAttacked;                               //By Sakura
     
 };
 
@@ -47,6 +48,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
 //ensure
     };
@@ -62,6 +64,7 @@ compatitors Kiana =
         10,
         "don't die for the first time and then immune element",
         "random 10-30 element damage every 3 turns",
+        0,
         0,
         0,
         0,
@@ -93,6 +96,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
         //ensure
     };
@@ -106,6 +110,7 @@ compatitors Kiana =
         2,
         "miss for 15%",
         "ramdon damage form 1-100 every 3 rounds",
+        0,
         0,
         0,
         0,
@@ -137,6 +142,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
     };
     compatitors Theresa =
@@ -149,6 +155,7 @@ compatitors Kiana =
         2,
         "decrease 50% element damage received",
         "ramdon 1-16 element damage every 2 rounds",
+        0,
         0,
         0,
         0,
@@ -180,6 +187,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
         //ensure
     };
@@ -193,6 +201,7 @@ compatitors Kiana =
         2,
         "increase 50% attack and defense when HP below 40%",
         "30% to stop attack and deal 200% element attack next turn",
+        0,
         0,
         0,
         0,
@@ -224,6 +233,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
         //ensure
     };
@@ -237,6 +247,7 @@ compatitors Kiana =
         8,
         "30% damage rise 50% and 30% damage fall 50%",
         "15 damage for 10 times and stop next turn",
+        0,
         0,
         0,
         0,
@@ -268,6 +279,7 @@ compatitors Kiana =
         0,
         0,
         0,
+        0,
         0
         //ensure
     };
@@ -281,6 +293,7 @@ compatitors Kiana =
         8,
         "20% burn and deal 5 element damage for 3 turns",
         "damage double(after consider the defense) for 25%",
+        0,
         0,
         0,
         0,

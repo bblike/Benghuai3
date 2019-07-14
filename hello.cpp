@@ -75,19 +75,25 @@ void whoWillCome(string PlayerA, string PlayerB)
 
 }
 
-void derectDamage(compatitors Attacker, compatitors Receiver)
+void derectDamage(compatitors &Attacker, compatitors &Receiver)
 {
     Receiver.HP = Receiver.HP - (Attacker.attack - Receiver.defense);
+    Attacker.ifAttacked = 1;
 }
 
-void elementDamage(compatitors Receiver, int elementAttack)
+void elementDamage(compatitors &Attacker, compatitors &Receiver, int elementAttack, bool ifInitial)
 {
     if(Receiver.ifElementDecreased == 1)
-    Receiver.HP = Receiver.HP - elementAttack * 0.5;
+    {
+        Receiver.HP = Receiver.HP - elementAttack * 0.5;
+        if(ifInitial == 1){Attacker.ifAttacked = 1;}
+    }
     else if(Receiver.ifElementImmune == 1)
-    Receiver.HP = Receiver.HP;
+        Receiver.HP = Receiver.HP;
     else
-    Receiver.HP = Receiver.HP - elementAttack;
+        Receiver.HP = Receiver.HP - elementAttack;
+    
+
 }
 
 void deadJudge()
@@ -113,10 +119,11 @@ void KianaPassive(int roundNumber)
         Playerb.HP += 20;
     }
 
-void KianaMustKill(int roundNumber, compatitors Attacker, compatitors Receiver)
+void KianaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
     {
         if(roundNumber == 3 && Attacker.name == "Kiana Kaslana")
         Receiver.HP = Receiver.HP - 8 *(Attacker.attack - Receiver.defense);
+
     }
 
 void FuhuaPassive()
@@ -134,20 +141,20 @@ void FuhuaPassive()
             Playerb.HP = 1;
         }
     }
-void FuhuaMustKill(int roundNumber, compatitors Attacker, compatitors Receiver)
+void FuhuaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
 {
     if(roundNumber == 3 && Attacker.name == "Fuhua"){
         int a =rand()%30 + 10;//随机10到30
-    elementDamage(Receiver, a);
+    elementDamage(Attacker, Receiver, a, 1);
     }
     
 } 
 
-void oneRoundGame(int roundNumber)
+void oneRoundGame(int &roundNumber)
 {
     //开始阶段（芽衣点燃，是否禁止行动）
-    if(Playera.burningRecord >= 1){elementDamage(Playera, 5);}
-    if(Playerb.burningRecord >= 1){elementDamage(Playerb, 5);}
+    if(Playera.burningRecord >= 1){elementDamage(Playerb, Playera, 5, 0);}
+    if(Playerb.burningRecord >= 1){elementDamage(Playera, Playerb, 5, 0);}
     compatitors firstMove = {};
     compatitors nextMove = {};
     if(Playera.ifStopMoving == 0 && Playerb.ifStopMoving == 0)
@@ -164,6 +171,7 @@ void oneRoundGame(int roundNumber)
             memcpy(&nextMove, &Playera, sizeof(Playera));
         }
 
+        //高速效果1（）
         
         //高速先攻（）
         if(roundNumber == 2 || roundNumber == 4 || roundNumber == 6 || roundNumber == 8)
@@ -174,18 +182,23 @@ void oneRoundGame(int roundNumber)
         {
 
         }
+        if(firstMove.ifAttacked == 0)
         derectDamage(firstMove, nextMove);
 
-        //高速效果（）
+        //高速效果2（）
 
 
         //是否死亡（）
         deadJudge();
 
+        //低速效果1（）
+
+
         //低速后攻（）
         derectDamage(nextMove, firstMove);
 
-        //低速效果（）
+
+        //低速效果2（）
 
 
         //是否死亡（）    
@@ -193,7 +206,17 @@ void oneRoundGame(int roundNumber)
     }
 
     //结束回合（解除禁止状态，全局计数器）
-
+    if(Playera.ifCannotAttack == 1)
+    {
+        Playera.ifCannotAttack = 0;
+        Playera.ifStopMoving = 1;
+    }
+    if(Playerb.ifCannotAttack == 1)
+    {
+        Playerb.ifCannotAttack = 0;
+        Playerb.ifStopMoving = 1;
+    }
+    roundNumber++;
 }
 
 
