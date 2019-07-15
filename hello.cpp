@@ -86,14 +86,16 @@ void elementDamage(compatitors &Attacker, compatitors &Receiver, int elementAtta
     if(Receiver.ifElementDecreased == 1)
     {
         Receiver.HP = Receiver.HP - elementAttack * 0.5;
-        if(ifInitial == 1){Attacker.ifAttacked = 1;}
     }
     else if(Receiver.ifElementImmune == 1)
+    {
         Receiver.HP = Receiver.HP;
+    }
     else
+    {
         Receiver.HP = Receiver.HP - elementAttack;
-    
-
+    }
+    if(ifInitial == 1){Attacker.ifAttacked = 1;}
 }
 
 void deadJudge()
@@ -150,33 +152,33 @@ void FuhuaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver
     
 } 
 
-void oneRoundGame(int &roundNumber)
+void MeiAttack(compatitors &Attacker, compatitors &Receiver)
+{
+    derectDamage(Attacker, Receiver);
+    elementDamage(Attacker, Receiver, 5, 1);
+    int a = rand()%100;
+    if(a < 30)
+    {
+        elementDamage(Attacker, Receiver, 15, 1);
+        Receiver.ifMustKillDisabled = 1;
+    }
+
+}
+
+void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMove)
 {
     //开始阶段（芽衣点燃，是否禁止行动）
-    if(Playera.burningRecord >= 1){elementDamage(Playerb, Playera, 5, 0);}
-    if(Playerb.burningRecord >= 1){elementDamage(Playera, Playerb, 5, 0);}
-    compatitors firstMove = {};
-    compatitors nextMove = {};
-    if(Playera.ifStopMoving == 0 && Playerb.ifStopMoving == 0)
-    {
-        //比较阶段（速度）
-        if(Playera.speed >= Playerb.speed)
-        {
-            memcpy(&firstMove, &Playera, sizeof(Playera));
-            memcpy(&nextMove, &Playerb, sizeof(Playerb));
-        }
-        else
-        {
-            memcpy(&firstMove, &Playerb, sizeof(Playerb));
-            memcpy(&nextMove, &Playera, sizeof(Playera));
-        }
+    if(firstMove.burningRecord >= 1){elementDamage(nextMove, firstMove, 5, 0);}
+    if(nextMove.burningRecord >= 1){elementDamage(firstMove, nextMove, 5, 0);}
+    if(firstMove.burningRecord >=1){firstMove.burningRecord--;}
+    if(nextMove.burningRecord >=1){nextMove.burningRecord--;}
 
-        //高速效果1（）
+    //高速效果（）
         
-        //高速先攻（）
+    //高速先攻（）
         if(roundNumber == 2 || roundNumber == 4 || roundNumber == 6 || roundNumber == 8)
         {
-
+            
         }
         else if(roundNumber == 3 || roundNumber == 6)    //3回合触发必杀技
         {
@@ -185,36 +187,37 @@ void oneRoundGame(int &roundNumber)
         if(firstMove.ifAttacked == 0)
         derectDamage(firstMove, nextMove);
 
-        //高速效果2（）
+    //高速结算（禁技，沉默）
+    firstMove.ifMustKillDisabled = 0;
+    
 
-
-        //是否死亡（）
+    //是否死亡（）
         deadJudge();
 
-        //低速效果1（）
+    //低速效果1（）
 
 
-        //低速后攻（）
+    //低速后攻（）
         derectDamage(nextMove, firstMove);
 
 
-        //低速效果2（）
+    //低速结算（）
+    nextMove.ifMustKillDisabled = 0;
 
-
-        //是否死亡（）    
+    //是否死亡（）    
         deadJudge();
-    }
+    
 
     //结束回合（解除禁止状态，全局计数器）
-    if(Playera.ifCannotAttack == 1)
+    if(firstMove.ifCannotAttack == 1)
     {
-        Playera.ifCannotAttack = 0;
-        Playera.ifStopMoving = 1;
+        firstMove.ifCannotAttack = 0;
+        firstMove.ifStopMoving = 1;
     }
-    if(Playerb.ifCannotAttack == 1)
+    if(nextMove.ifCannotAttack == 1)
     {
-        Playerb.ifCannotAttack = 0;
-        Playerb.ifStopMoving = 1;
+        nextMove.ifCannotAttack = 0;
+        nextMove.ifStopMoving = 1;
     }
     roundNumber++;
 }
@@ -228,10 +231,25 @@ void oneRoundGame(int &roundNumber)
     cout<<"PlayerA:"<<Playera.name<<'\n';
     cout<<"PlayerB:"<<Playerb.name<<'\n';
     int roundNumber = 1;
+    
+    compatitors firstMove = {};
+    compatitors nextMove = {};
+    //比较阶段（速度）
+        if(Playera.speed >= Playerb.speed)
+        {
+            memcpy(&firstMove, &Playera, sizeof(Playera));
+            memcpy(&nextMove, &Playerb, sizeof(Playerb));
+        }
+        else
+        {
+            memcpy(&firstMove, &Playerb, sizeof(Playerb));
+            memcpy(&nextMove, &Playera, sizeof(Playera));
+        }
+
     while(Playera.HP > 0 && Playerb.HP > 0)
     {
-        oneRoundGame(roundNumber);
-        roundNumber++;
+        oneRoundGame(roundNumber, firstMove, nextMove);
+        
         deadJudge();
     };
     if(Playera.HP > 0)
