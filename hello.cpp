@@ -1,83 +1,16 @@
-#include "include/includes.h"
-
-#include "include/backgrounds.h"
+#include "whowillcome.h"
 
 bool ifGameComplete = 0;
 
 
-void whoWillCome(string PlayerA, string PlayerB)
-{ 
-
-    if(PlayerA == "Kiana")
-    memcpy(&Playera, &Kiana, sizeof(Kiana));
-    if(PlayerA == "Mei")
-    memcpy(&Playera, &Mei, sizeof(Mei));
-    if(PlayerA == "Fuhua")
-    memcpy(&Playera, &Fuhua, sizeof(Fuhua));
-    if(PlayerA == "Theresa")
-    memcpy(&Playera, &Theresa, sizeof(Theresa));
-    if(PlayerA == "Bronya")
-    memcpy(&Playera, &Bronya, sizeof(Bronya));
-    if(PlayerA == "Himeko")
-    memcpy(&Playera, &Himeko, sizeof(Himeko));
-    if(PlayerA == "Sakura")
-    memcpy(&Playera, &Sakura, sizeof(Sakura));
-    if(PlayerA == "Liliya")
-    memcpy(&Playera, &Liliya, sizeof(Liliya));
-    if(PlayerA == "Rosaliya")
-    memcpy(&Playera, &Rozaliya, sizeof(Rozaliya));
-    if(PlayerA == "Rita")
-    memcpy(&Playera, &Rita, sizeof(Rita));
-    if(PlayerA == "Kallen")
-    memcpy(&Playera, &Kallen, sizeof(Kallen));
-    if(PlayerA == "Seele")
-    memcpy(&Playera, &Seele, sizeof(Seele));
-     
-    if(PlayerB == "Kiana")
-    memcpy(&Playera, &Kiana, sizeof(Kiana));
-    if(PlayerB == "Mei")
-    memcpy(&Playera, &Mei, sizeof(Mei));
-    if(PlayerB == "Fuhua")
-    memcpy(&Playera, &Fuhua, sizeof(Fuhua));
-    if(PlayerB == "Theresa")
-    memcpy(&Playera, &Theresa, sizeof(Theresa));
-    if(PlayerB == "Bronya")
-    memcpy(&Playera, &Bronya, sizeof(Bronya));
-    if(PlayerB == "Himeko")
-    memcpy(&Playera, &Himeko, sizeof(Himeko));
-    if(PlayerB == "Sakura")
-    memcpy(&Playera, &Sakura, sizeof(Sakura));
-    if(PlayerB == "Liliya")
-    memcpy(&Playera, &Liliya, sizeof(Liliya));
-    if(PlayerB == "Rosaliya")
-    memcpy(&Playera, &Rozaliya, sizeof(Rozaliya));
-    if(PlayerB == "Rita")
-    memcpy(&Playera, &Rita, sizeof(Rita));
-    if(PlayerB == "Kallen")
-    memcpy(&Playera, &Kallen, sizeof(Kallen));
-    if(PlayerB == "Seele")
-    memcpy(&Playera, &Seele, sizeof(Seele));
-        
-    if(PlayerA == PlayerB)
-    {
-        cout<<"Competitors Failure. Enter '1' to continue. Enter '2' to exit.\n";
-        string a;
-        cin>>a;
-        if(a == "李锗均最帅，我要一起来！")
-            {}
-            else 
-            return;
-
-    }
 
 
-
-
-}
-
-void derectDamage(compatitors &Attacker, compatitors &Receiver)
+void directDamage(compatitors &Attacker, compatitors &Receiver)
 {
+    if(rand()%100 <= Attacker.accuracy )
+    {
     Receiver.HP = Receiver.HP - (Attacker.attack - Receiver.defense);
+    }
     Attacker.ifAttacked = 1;
 }
 
@@ -98,14 +31,14 @@ void elementDamage(compatitors &Attacker, compatitors &Receiver, int elementAtta
     if(ifInitial == 1){Attacker.ifAttacked = 1;}
 }
 
-void deadJudge()
+void deadJudge(compatitors firstMove, compatitors nextMove)
 {
-    if(Playera.HP <= 0)
+    if(firstMove.HP <= 0)
     {
         ifGameComplete = 1;
         return;
     }
-    if(Playerb.HP <= 0)
+    if(nextMove.HP <= 0)
     {
         ifGameComplete = 1;
         return;
@@ -113,36 +46,48 @@ void deadJudge()
     
 }
 
-void KianaPassive(int roundNumber)
+void KianaPassive(int roundNumber, compatitors &firstMove, compatitors &nextMove)
     {
-        if(roundNumber == 1 && Playera.name == "Kiana Kaslana")
-        Playera.HP += 20;
-        if(roundNumber == 1 && Playerb.name == "Kiana Kaslana")
-        Playerb.HP += 20;
+        if(roundNumber == 1 && firstMove.name == "Kiana Kaslana")
+        firstMove.HP += 20;
+        if(roundNumber == 1 && nextMove.name == "Kiana Kaslana")
+        nextMove.HP += 20;
     }
 
 void KianaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
     {
-        if(roundNumber == 3 && Attacker.name == "Kiana Kaslana")
-        Receiver.HP = Receiver.HP - 8 *(Attacker.attack - Receiver.defense);
+        if(Attacker.name == "Kiana Kaslana")
+        if(roundNumber == 3 || roundNumber == 6 || roundNumber == 9)
+        {
+            int tempAttack = Attacker.attack;
+            Attacker.attack = 12;
+            for(int a = 1;a <= 8;a++)
+            directDamage(Attacker, Receiver);
+            Attacker.attack = tempAttack;
+            Attacker.ifAttacked = 1;
+        }
 
     }
 
-void FuhuaPassive()
+void FuhuaPassive(compatitors &Attacker, compatitors &Receiver)
     {
-        if(Playera.ifCannotDie == 1 && Playera.HP <= 0)
+        if(Attacker.name == "Fuhua"){
+        if(Attacker.ifCannotDie == 1 && Attacker.HP <= 0)
         {
-            Playera.ifCannotDie = 0;
-            Playera.ifElementImmune = 1;
-            Playera.HP = 1;
+            Attacker.ifCannotDie = 0;
+            Attacker.ifElementImmune = 1;
+            Attacker.HP = 1;
         }
-        if(Playerb.ifCannotDie == 1 && Playerb.HP <= 0)
+        }
+        if(Receiver.name == "Fuhua"){}
+        if(Receiver.ifCannotDie == 1 && Receiver.HP <= 0)
         {
-            Playerb.ifCannotDie = 0;
-            Playerb.ifElementImmune = 1;
-            Playerb.HP = 1;
+            Receiver.ifCannotDie = 0;
+            Receiver.ifElementImmune = 1;
+            Receiver.HP = 1;
         }
-    }
+        }   
+    
 void FuhuaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
 {
     if(roundNumber == 3 && Attacker.name == "Fuhua"){
@@ -154,7 +99,8 @@ void FuhuaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver
 
 void MeiAttack(compatitors &Attacker, compatitors &Receiver)
 {
-    derectDamage(Attacker, Receiver);
+    if(Attacker.name == "Raiden Mei")
+    directDamage(Attacker, Receiver);
     elementDamage(Attacker, Receiver, 5, 1);
     int a = rand()%100;
     if(a < 30)
@@ -162,50 +108,132 @@ void MeiAttack(compatitors &Attacker, compatitors &Receiver)
         elementDamage(Attacker, Receiver, 15, 1);
         Receiver.ifMustKillDisabled = 1;
     }
+    else
+    {
+        directDamage(Attacker, Receiver);
+    }
 
+}
+void BronyaPassive(compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Bronya Zaychik")
+    {
+        Receiver.accuracy = 85;
+    }
+    if(Receiver.name == "Bronya Zaychik")
+    {
+        Attacker.accuracy = 85;
+    }
+}
+
+
+void BronyaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Bronya Zaychik"){
+    if(roundNumber == 3 || roundNumber == 6 || roundNumber == 9){
+    int tempattack = rand()%100 +1;
+    int previousattack = Attacker.attack;
+    Attacker.attack = tempattack;
+    directDamage(Attacker, Receiver);
+    Attacker.attack = previousattack;
+    }
+    
+    }
+}
+
+void SeelePassive(compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Seele Vollerei")
+    {
+        Attacker.HP = Attacker.HP + 7;
+        if(Attacker.HP >= 100)
+        Attacker.HP = 100;
+    }
+    if(Receiver.name == "Seele Vollerei")
+    {
+        Receiver.HP = Receiver.HP + 7;
+        if(Receiver.HP >= 100)
+        Receiver.HP = 100;
+    }
+}
+void SeeleMustKill(int &roundNumber, compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Seele Vollerei" && roundNumber == 4)
+    {
+        Attacker.accuracy = Attacker.accuracy * 0.85;
+        Attacker.attack = Attacker.attack + 77;
+        directDamage(Attacker, Receiver);
+        Attacker.accuracy = Attacker.accuracy / 0.85;
+        Attacker.attack = Attacker.attack - 77;
+    }
+        if(Attacker.name == "Seele Vollerei" && roundNumber == 8)
+    {
+        Attacker.accuracy = Attacker.accuracy * 0.85;
+        Attacker.attack = Attacker.attack + 77;
+        directDamage(Attacker, Receiver);
+        Attacker.accuracy = Attacker.accuracy / 0.85;
+        Attacker.attack = Attacker.attack - 77;
+    }
 }
 
 void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMove)
 {
     //开始阶段（芽衣点燃，是否禁止行动）
+    firstMove.ifAttacked = 0;
+    nextMove.ifAttacked = 0;
     if(firstMove.burningRecord >= 1){elementDamage(nextMove, firstMove, 5, 0);}
     if(nextMove.burningRecord >= 1){elementDamage(firstMove, nextMove, 5, 0);}
     if(firstMove.burningRecord >=1){firstMove.burningRecord--;}
     if(nextMove.burningRecord >=1){nextMove.burningRecord--;}
 
     //高速效果（）
-        
+        KianaPassive(roundNumber, firstMove, nextMove);
+        FuhuaPassive(firstMove, nextMove);
+        BronyaPassive(firstMove, nextMove);
+        SeelePassive(firstMove, nextMove);
     //高速先攻（）
-        if(roundNumber == 2 || roundNumber == 4 || roundNumber == 6 || roundNumber == 8)
-        {
-            
-        }
-        else if(roundNumber == 3 || roundNumber == 6)    //3回合触发必杀技
-        {
-
-        }
+        KianaMustKill(roundNumber, firstMove, nextMove);
+        FuhuaMustKill(roundNumber, firstMove, nextMove);
+        BronyaMustKill(roundNumber, firstMove, nextMove);
+        SeeleMustKill(roundNumber, firstMove, nextMove);
+        if(firstMove.name == "Ralden Mei"){MeiAttack(firstMove, nextMove);}
+        else
         if(firstMove.ifAttacked == 0)
-        derectDamage(firstMove, nextMove);
-
+        {
+        directDamage(firstMove, nextMove);
+        }
     //高速结算（禁技，沉默）
     firstMove.ifMustKillDisabled = 0;
-    
+        FuhuaPassive(nextMove,firstMove);
 
     //是否死亡（）
-        deadJudge();
+        deadJudge(firstMove, nextMove);
 
     //低速效果1（）
-
+        KianaPassive(roundNumber, nextMove, firstMove);
+        FuhuaPassive(nextMove, firstMove);
+        BronyaPassive(nextMove, firstMove);
+        SeelePassive(nextMove, firstMove);
 
     //低速后攻（）
-        derectDamage(nextMove, firstMove);
+        KianaMustKill(roundNumber, nextMove, firstMove);
+        FuhuaMustKill(roundNumber, nextMove, firstMove);
+        BronyaMustKill(roundNumber, nextMove, firstMove);
+        SeeleMustKill(roundNumber, nextMove, firstMove);
+        if(nextMove.name == "Ralden Mei"){MeiAttack(nextMove, firstMove);}
+        else
+        if(nextMove.ifAttacked == 0)
+        {
+        directDamage(nextMove, firstMove);
+        }
 
 
     //低速结算（）
     nextMove.ifMustKillDisabled = 0;
-
+        FuhuaPassive(nextMove,firstMove);
     //是否死亡（）    
-        deadJudge();
+
+        deadJudge(firstMove, nextMove);
     
 
     //结束回合（解除禁止状态，全局计数器）
@@ -220,6 +248,8 @@ void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMov
         nextMove.ifStopMoving = 1;
     }
     roundNumber++;
+    cout<<firstMove.name << " HP: "<< firstMove.HP<<endl;
+    cout<<nextMove.name << " HP: "<< nextMove.HP<<endl;
 }
 
 
@@ -245,17 +275,18 @@ void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMov
             memcpy(&firstMove, &Playerb, sizeof(Playerb));
             memcpy(&nextMove, &Playera, sizeof(Playera));
         }
-
-    while(Playera.HP > 0 && Playerb.HP > 0)
+    
+    while(firstMove.HP > 0 && nextMove.HP > 0)
     {
         oneRoundGame(roundNumber, firstMove, nextMove);
+        cout<<"Round " << roundNumber << " completed.\n";
+        deadJudge(firstMove, nextMove);
         
-        deadJudge();
     };
-    if(Playera.HP > 0)
-    winner = Playera.name;
+    if(firstMove.HP > 0)
+    winner = firstMove.name;
     else 
-    winner = Playerb.name;
+    winner = nextMove.name;
 
 
     return winner;
@@ -265,11 +296,15 @@ int main()
 {
     string a,b;
 
-    a = "Kiana";
-    b = "Mei";
+    a = "Mei";
+    b = "Fuhua";
     string winner;
     winner = gameSystem(a,b);
-    cout<<winner<<'\n';
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    cout<<"***************************\n";
+    cout<<"        " << winner<<'\n';
+    cout<<"***************************\n";
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
     while(1){};
     
 
