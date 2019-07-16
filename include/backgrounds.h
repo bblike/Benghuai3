@@ -26,6 +26,7 @@ struct compatitors
     bool ifStopMoving;   
     bool ifAttacked;                               //By Sakura
     bool ifMustKillDisabled;
+    bool ifAutoWin;
 };
 
 

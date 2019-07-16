@@ -176,6 +176,40 @@ void SeeleMustKill(int &roundNumber, compatitors &Attacker, compatitors &Receive
     }
 }
 
+void TheresaPassive(compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Theresa Apocalyse")
+    {
+        Attacker.ifElementDecreased = 1;
+    }
+    if(Receiver.name == "Theresa Apocalyse")
+    {
+        Receiver.ifElementDecreased = 1;
+    }
+
+}
+
+void TheresaMustKill(int roundNumber, compatitors &Attacker, compatitors &Receiver)
+{
+    if(Attacker.name == "Theresa Apocalyse" || roundNumber == 2)
+    {
+        elementDamage(Attacker, Receiver, rand()%16 + 1, 1);
+    }
+}
+
+void KallenPassive(compatitors &Attacker, compatitors &Receiver)
+{
+    int a = rand()%100 + 1;
+    if(a <= 5)
+    {
+        Attacker.ifAutoWin = 1;
+        Receiver.ifCannotDie = 0;
+        Receiver.HP = 0;
+    }
+}
+
+
+
 void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMove)
 {
     //开始阶段（芽衣点燃，是否禁止行动）
@@ -191,11 +225,14 @@ void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMov
         FuhuaPassive(firstMove, nextMove);
         BronyaPassive(firstMove, nextMove);
         SeelePassive(firstMove, nextMove);
+        TheresaPassive(firstMove, nextMove);
+        KallenPassive(firstMove, nextMove);
     //高速先攻（）
         KianaMustKill(roundNumber, firstMove, nextMove);
         FuhuaMustKill(roundNumber, firstMove, nextMove);
         BronyaMustKill(roundNumber, firstMove, nextMove);
         SeeleMustKill(roundNumber, firstMove, nextMove);
+        TheresaMustKill(roundNumber, firstMove, nextMove);
         if(firstMove.name == "Ralden Mei"){MeiAttack(firstMove, nextMove);}
         else
         if(firstMove.ifAttacked == 0)
@@ -214,12 +251,15 @@ void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMov
         FuhuaPassive(nextMove, firstMove);
         BronyaPassive(nextMove, firstMove);
         SeelePassive(nextMove, firstMove);
+        TheresaPassive(nextMove, firstMove);
+        KallenPassive(nextMove, firstMove);
 
     //低速后攻（）
         KianaMustKill(roundNumber, nextMove, firstMove);
         FuhuaMustKill(roundNumber, nextMove, firstMove);
         BronyaMustKill(roundNumber, nextMove, firstMove);
         SeeleMustKill(roundNumber, nextMove, firstMove);
+        TheresaMustKill(roundNumber, nextMove, firstMove);
         if(nextMove.name == "Ralden Mei"){MeiAttack(nextMove, firstMove);}
         else
         if(nextMove.ifAttacked == 0)
@@ -295,7 +335,7 @@ void oneRoundGame(int &roundNumber, compatitors &firstMove, compatitors &nextMov
 int main()
 {
     string a,b;
-
+    
     a = "Mei";
     b = "Fuhua";
     string winner;
